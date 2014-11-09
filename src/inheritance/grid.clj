@@ -2,7 +2,7 @@
 (ns inheritance.grid)
 (use 'clojure.set)
 
-(defmulti subobj? (fn [l r] [(type l) (type r)]))
+(defmulti subobj? "Subset or subarraymap" (fn [l r] [(type l) (type r)]))
 
 (defmethod subobj?
      [clojure.lang.PersistentHashSet clojure.lang.PersistentHashSet]
@@ -12,7 +12,7 @@
      [clojure.lang.PersistentArrayMap clojure.lang.PersistentArrayMap]
      [l r] (every? (fn [[k v]] (= v (r k))) l))
 
-(defn register-grid-node [h o]
+(defn register-grid-node "Register node in hierarchy" [h o]
   (let [nl (get (meta h) :grid-hierarchy-cache {})]
    (if-let [s (nl o)]
      [h s]
@@ -29,11 +29,11 @@
                          :grid-hierarchy-cache (assoc nl o s)))
          s]))))
 
-(defn make-grid-hierarchy []
+(defn make-grid-hierarchy "Make new hierarchy of grid-nodes" []
    (let [h (make-hierarchy)]
     (with-meta h (assoc (or (meta h) {}) :grid-hierarchy-cache {}))))
 
-(defn get-grid-node [n hv]
+(defn get-grid-node "Get (or generate and register) symbol name of node" [n hv]
    (let [sa (atom nil)]
      (alter-var-root hv (fn [ho]
                          (let [[hn s] (register-grid-node ho n)]
@@ -41,10 +41,12 @@
                            hn)))
      @sa))
 
-(defn with-grid-node [v n h]
+(defn with-grid-node "Mark data by node" [v n h]
   (let [s (get-grid-node n h)]
    (with-meta v (assoc (or (meta v) {}) :grid-node s))))
 
-(defn grid-dispatch [] (fn [& v] (vec (map (fn [a] (:grid-node (meta a))) v))))
-(defn grid-dispatch1 [] (fn [v & _] (:grid-node (meta v))))
+(defn grid-dispatch "Make dispatcher by all args"
+        [] (fn [& v] (vec (map (fn [a] (:grid-node (meta a))) v))))
+(defn grid-dispatch1 "Make dispatcher by first arg"
+        [] (fn [v & _] (:grid-node (meta v))))
 
