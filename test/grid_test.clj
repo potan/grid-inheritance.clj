@@ -11,7 +11,7 @@
 (defmethod tst [(get-grid-node {:c :d} #'grid)] [v] "c d")
 
 (deftest simple-test
-  (is (= (tst (with-grid-node {} {:a :b :c :d} #'grid)) "a b c d"))
-  (is (= (tst (with-grid-node {} {:a :e :c :d} #'grid)) "c d"))
-  (is (= (tst (with-grid-node {} {:a :e :g :d} #'grid)) "root"))
+  (is (= (tst ((with-grid-node {:a :b :c :d} #'grid) {})) "a b c d"))
+  (is (= (tst ((with-grid-node {:a :e :c :d} #'grid) {})) "c d"))
+  (is (= (tst ((with-grid-node {:a :e :g :d} #'grid) {})) "root"))
 )

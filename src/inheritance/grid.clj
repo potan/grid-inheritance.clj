@@ -41,9 +41,10 @@
                            hn)))
      @sa))
 
-(defn with-grid-node "Mark data by node" [v n h]
+(defn with-grid-node "Mark data by node" [n h]
   (let [s (get-grid-node n h)]
-   (with-meta v (assoc (or (meta v) {}) :grid-node s))))
+   (fn [v]
+      (with-meta v (assoc (or (meta v) {}) :grid-node s)))))
 
 (defn grid-dispatch "Make dispatcher by all args"
         [] (fn [& v] (vec (map (fn [a] (:grid-node (meta a))) v))))
