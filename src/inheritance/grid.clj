@@ -5,11 +5,11 @@
 (defmulti subobj? "Subset or subarraymap" (fn [l r] [(type l) (type r)]))
 
 (defmethod subobj?
-     [clojure.lang.PersistentHashSet clojure.lang.PersistentHashSet]
+     [clojure.lang.APersistentSet clojure.lang.APersistentSet]
      [l r] (clojure.set/subset? l r))
 
 (defmethod subobj?
-     [clojure.lang.PersistentArrayMap clojure.lang.PersistentArrayMap]
+     [clojure.lang.APersistentMap clojure.lang.APersistentMap]
      [l r] (every? (fn [[k v]] (= v (r k))) l))
 
 (defn register-grid-node "Register node in hierarchy" [h o]
