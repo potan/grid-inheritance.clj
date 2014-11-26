@@ -51,3 +51,11 @@
 (defn grid-dispatch1 "Make dispatcher by first arg"
         [] (fn [v & _] (:grid-node (meta v))))
 
+(defmacro def-grid-node [name props grid]
+  (let [s (gensym)
+        f (gensym)
+        cname (symbol (str "->" name))]
+   `(let [~s (get-grid-node ~props (var ~grid))
+          ~f (with-grid-node ~s)]
+      (def ~name ~s)
+      (def ~cname ~f))))
